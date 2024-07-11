@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TBotPlatform\TBotPlatform.Extension\TBotPlatform.Extension.csproj" />
+    <ProjectReference Include="..\WireGuardApi.Domain\WireGuardApi.Domain.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="**\DependencyInjection.*.cs">
+			<DependentUpon>DependencyInjection.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>
