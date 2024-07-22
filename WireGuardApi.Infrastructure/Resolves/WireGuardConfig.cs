@@ -42,7 +42,7 @@ internal class WireGuardConfig : IWireGuardConfig
 
             if (line.StartsWith('#'))
             {
-                if (!config.Comment.CheckAny())
+                if (config.Comment.IsNull())
                 {
                     config.Comment = line
                                     .Replace("# ", string.Empty)

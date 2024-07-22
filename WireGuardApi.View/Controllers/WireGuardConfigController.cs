@@ -9,7 +9,7 @@ using WireGuardApi.View.Contracts;
 namespace WireGuardApi.View.Controllers;
 
 [ApiController]
-[Route("[controller]/{wgInterfaceName}")]
+[Route("{wgInterfaceName}/[controller]")]
 [Authorize]
 public class WireGuardConfigController(
     ILogger<WireGuardConfigController> logger,

@@ -48,14 +48,14 @@ public class Program
                 {
                     var logFilePath = builder.Configuration.GetValue<string>("LogFilePath");
 
-                    if (!logFilePath.CheckAny())
+                    if (logFilePath.IsNull())
                     {
                         throw new("Конфиг LogFilePath пустой.");
                     }
 
                     var logging = builder.Configuration.GetSection("Logging");
 
-                    if (!logging.CheckAny())
+                    if (logging.IsNull())
                     {
                         throw new("Конфиг Logging пустой.");
                     }

@@ -50,14 +50,14 @@ internal class MapsterConfigRegister : IRegister
 
         string GetValue(EConfigurationKeyType f)
         {
-            if (!rootInterface.CheckAny())
+            if (rootInterface.IsNull())
             {
                 return "";
             }
 
             var config = rootInterface!.ConfigurationValues.FirstOrDefault(z => z.Key == f);
 
-            return config.CheckAny()
+            return config.IsNotNull()
                 ? config!.Value
                 : "";
         }

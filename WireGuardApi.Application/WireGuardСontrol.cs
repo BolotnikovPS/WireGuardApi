@@ -141,8 +141,8 @@ internal class WireGuardСontrol(
         var existPublicKey = config.Peers.FirstOrDefault(x => x.ConfigurationValues.Any(z => z.Key == EConfigurationKeyType.PublicKey && z.Value == clientPeer));
         var checkAllowedIPs = config.Peers.FirstOrDefault(x => x.ConfigurationValues.Any(z => z.Key == EConfigurationKeyType.AllowedIPs && z.Value == clientPrivateIp));
 
-        if (checkAllowedIPs.CheckAny()
-            && existPublicKey.CheckAny()
+        if (checkAllowedIPs.IsNotNull()
+            && existPublicKey.IsNotNull()
             && !checkAllowedIPs!.Equals(existPublicKey)
            )
         {
@@ -182,14 +182,32 @@ internal class WireGuardСontrol(
             await ReNewConfigAsync(wgInterfaceName, config, cancellationToken);
         }
 
-        var command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.Down, wgInterfaceName);
+        await DownAsync(wgInterfaceName, cancellationToken);
+
+        var command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.AddPeer, wgInterfaceName, clientPeer, clientPrivateIp);
         await terminalCommand.ExecuteAsync(command, cancellationToken);
 
-        command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.AddPeer, wgInterfaceName, clientPeer, clientPrivateIp);
-        await terminalCommand.ExecuteAsync(command, cancellationToken);
+        await UpAsync(wgInterfaceName, cancellationToken);
+    }
 
-        command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.Up, wgInterfaceName);
-        await terminalCommand.ExecuteAsync(command, cancellationToken);
+    public async Task RemovePeerAsync(string wgInterfaceName, string clientPeer, CancellationToken cancellationToken)
+    {
+        var config = await GetConfigAsync(wgInterfaceName, cancellationToken);
+        
+        var peer = config.Peers.FirstOrDefault(z => z.ConfigurationValues.Any(x => x.Value == clientPeer && x.Key == EConfigurationKeyType.PublicKey));
+
+        if (peer.IsNull())
+        {
+            return;
+        }
+
+        config.Peers.Remove(peer);
+
+        await ReNewConfigAsync(wgInterfaceName, config, cancellationToken);
+        
+        await DownAsync(wgInterfaceName, cancellationToken);
+
+        await UpAsync(wgInterfaceName, cancellationToken);
     }
 
     public Task<string> GetStatisticsAsync(string wgInterfaceName, CancellationToken cancellationToken)
@@ -225,18 +243,18 @@ internal class WireGuardСontrol(
         var root = await GetConfigAsync(wgInterfaceName, cancellationToken);
         var peers = root.Peers;
 
-        if (!peers.CheckAny())
+        if (peers.IsNull())
         {
             var wgInterface = root.Interface;
 
-            if (!wgInterface.CheckAny())
+            if (wgInterface.IsNull())
             {
                 throw new NullReferenceException();
             }
 
             var allowedIpSplit = wgInterface.Address.Split("/");
 
-            if (!allowedIpSplit.CheckAny())
+            if (allowedIpSplit.IsNull())
             {
                 throw new ArgumentNullException();
             }
@@ -254,14 +272,14 @@ internal class WireGuardСontrol(
                           .Select(y => y.Value)
                           .MaxBy(a => a);
 
-        if (!maxAllowedIp.CheckAny())
+        if (maxAllowedIp.IsNull())
         {
             throw new NullReferenceException();
         }
 
         var maxAllowedIPsSplit = maxAllowedIp.Split("/");
 
-        if (!maxAllowedIPsSplit.CheckAny())
+        if (maxAllowedIPsSplit.IsNull())
         {
             throw new ArgumentNullException();
         }

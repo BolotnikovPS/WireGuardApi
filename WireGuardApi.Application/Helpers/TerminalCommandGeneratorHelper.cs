@@ -28,8 +28,8 @@ internal class TerminalCommandGeneratorHelper : ITerminalCommandGeneratorHelper
     {
         var command = DataCollection.GetValueRefOrNullRef(type);
 
-        return !parameters.CheckAny() 
-            ? command 
+        return parameters.IsNull()
+            ? command
             : string.Format(command, parameters);
     }
 }

@@ -9,7 +9,7 @@ using WireGuardApi.View.Contracts;
 namespace WireGuardApi.View.Controllers;
 
 [ApiController]
-[Route("[controller]/{wgInterfaceName}")]
+[Route("{wgInterfaceName}/[controller]")]
 [Authorize]
 public class WireGuardCommandController(
     ILogger<WireGuardCommandController> logger,
@@ -39,6 +39,15 @@ public class WireGuardCommandController(
     public Task<List<AddAutoPeerResponse>> AddAutoPeerAsync(string wgInterfaceName, AddAutoPeerAsyncRequest request, CancellationToken cancellationToken)
     {
         var command = new AddAutoPeerCommand(wgInterfaceName, request.Comment);
+
+        return senderRun.SendAsync(command, cancellationToken);
+    }
+
+    [HttpPost]
+    [Route("removePeer")]
+    public Task RemovePeerAsync(string wgInterfaceName, RemovePeerAsyncRequest request, CancellationToken cancellationToken)
+    {
+        var command = new RemovePeerCommand(wgInterfaceName, request.ClientPeer);
 
         return senderRun.SendAsync(command, cancellationToken);
     }
