@@ -57,7 +57,7 @@ internal class WireGuardСontrol(
 
         var backupWgConf = conductorHelper.GetFullPath(settings.WGConfigPath, $"{NameToConfig(wgInterfaceName)}.{DateTime.UtcNow:yyyyMMddHHmmss}");
 
-        var command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.CopyConfig, conductorHelper.GetFullPath(backupWgConf));
+        var command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.CopyConfig, path, conductorHelper.GetFullPath(backupWgConf));
         await terminalCommand.ExecuteAsync(command, cancellationToken);
 
         var root = map.Map<Root>(config);
@@ -110,8 +110,15 @@ internal class WireGuardСontrol(
 
         var wireGuardSettings = configService.GetValueOrNull<WireGuardSettings>(EConfigKey.WireGuard);
 
-        var filePath = conductorHelper.GetFullPath(wireGuardSettings.WGClientsPath, $"{wgInterfaceName}/{fileName}");
-        var qrPath = conductorHelper.GetFullPath(wireGuardSettings.WGClientsPath, $"{wgInterfaceName}/{qrName}");
+        var wgInterfacePath = conductorHelper.GetFullPath(wireGuardSettings.WGClientsPath, wgInterfaceName);
+
+        if (!conductorHelper.FolderExist(wgInterfacePath))
+        {
+            Directory.CreateDirectory(wgInterfacePath);
+        }
+
+        var filePath = conductorHelper.GetFullPath(wgInterfacePath, fileName);
+        var qrPath = conductorHelper.GetFullPath(wgInterfacePath, qrName);
 
         await wireGuardClient.CreateClientAsync(
             clientPrivateKey,
