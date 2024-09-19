@@ -82,30 +82,32 @@ internal class WireGuardСontrol(
         var command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.GenKey);
         var clientPrivateKey = await terminalCommand.ExecuteAsync(command, cancellationToken);
 
-        clientPrivateKey = RemoveNewLine(clientPrivateKey);
+        clientPrivateKey = clientPrivateKey.RemoveNewLine();
 
         command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.GeneratePublicKey, clientPrivateKey);
         var clientPublicKey = await terminalCommand.ExecuteAsync(command, cancellationToken);
 
-        clientPublicKey = RemoveNewLine(clientPublicKey);
+        clientPublicKey = clientPublicKey.RemoveNewLine();
 
         command = terminalCommandGeneratorHelper.CreateCommand(ETerminalCommandType.GetServerPublicKey, wgInterfaceName);
         var serverPublicKey = await terminalCommand.ExecuteAsync(command, cancellationToken);
 
-        serverPublicKey = RemoveNewLine(serverPublicKey);
+        serverPublicKey = serverPublicKey.RemoveText("public key:").RemoveNewLine();
+
+        comment = comment.CheckAny()
+            ? comment
+            : $"Add Auto Peer {clientPrivateIp}";
 
         await AddPeerAsync(
             wgInterfaceName,
             clientPublicKey,
             clientPrivateIp,
-            comment.CheckAny()
-                ? comment
-                : $"Add Auto Peer {clientPrivateIp}",
+            comment,
             cancellationToken
             );
 
         var newClientGuid = Guid.NewGuid();
-        var fileName = NameToConfig(newClientGuid.ToString());
+        var fileName = NameToConfig(comment);
         var qrName = $"{newClientGuid}.png";
 
         var wireGuardSettings = configService.GetValueOrNull<WireGuardSettings>(EConfigKey.WireGuard);
@@ -200,7 +202,7 @@ internal class WireGuardСontrol(
     public async Task RemovePeerAsync(string wgInterfaceName, string clientPeer, CancellationToken cancellationToken)
     {
         var config = await GetConfigAsync(wgInterfaceName, cancellationToken);
-        
+
         var peer = config.Peers.FirstOrDefault(z => z.ConfigurationValues.Any(x => x.Value == clientPeer && x.Key == EConfigurationKeyType.PublicKey));
 
         if (peer.IsNull())
@@ -211,7 +213,7 @@ internal class WireGuardСontrol(
         config.Peers.Remove(peer);
 
         await ReNewConfigAsync(wgInterfaceName, config, cancellationToken);
-        
+
         await DownAsync(wgInterfaceName, cancellationToken);
 
         await UpAsync(wgInterfaceName, cancellationToken);
@@ -298,12 +300,10 @@ internal class WireGuardСontrol(
 
     private static IPAddress Increment(IPAddress value)
     {
-        var ip = BitConverter.ToInt32(value.GetAddressBytes().Reverse().ToArray(), 0);
+        var ip = BitConverter.ToInt32(value.GetAddressBytes().Reverse().ToArray(), startIndex: 0);
         ip++;
         return new(BitConverter.GetBytes(ip).Reverse().ToArray());
     }
-
-    private static string RemoveNewLine(string text) => text.Replace(Environment.NewLine, " ").Trim();
 
     private static string NameToConfig(string wgInterfaceName)
         => $"{wgInterfaceName}.conf";

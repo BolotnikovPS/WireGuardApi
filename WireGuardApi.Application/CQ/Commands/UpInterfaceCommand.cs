@@ -5,9 +5,7 @@ namespace WireGuardApi.Application.CQ.Commands;
 
 public record UpInterfaceCommand(string WgInterfaceName) : ICommand;
 
-internal class UpInterfaceCommandHandler(
-    IWireGuardСontrol wireGuardСontrol
-    )
+internal class UpInterfaceCommandHandler(IWireGuardСontrol wireGuardСontrol)
     : ICommandHandler<UpInterfaceCommand>
 {
     public Task Handle(UpInterfaceCommand request, CancellationToken cancellationToken)

@@ -21,10 +21,7 @@ internal class TerminalCommandGeneratorHelper : ITerminalCommandGeneratorHelper
         [ETerminalCommandType.GetServerPublicKey] = "wg show {0} | grep -e \"public key\" | cut -d: -f2",
     }.ToFrozenDictionary();
 
-    public string CreateCommand(
-        ETerminalCommandType type,
-        params string[] parameters
-        )
+    public string CreateCommand(ETerminalCommandType type, params string[] parameters)
     {
         var command = DataCollection.GetValueRefOrNullRef(type);
 

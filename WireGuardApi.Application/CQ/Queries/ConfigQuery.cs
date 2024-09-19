@@ -6,9 +6,7 @@ namespace WireGuardApi.Application.CQ.Queries;
 
 public record ConfigQuery(string WgInterfaceName) : IQuery<WireGuardConfig>;
 
-internal class ConfigQueryHandler(
-    IWireGuardСontrol wireGuardСontrol
-    )
+internal class ConfigQueryHandler(IWireGuardСontrol wireGuardСontrol)
     : IQueryHandler<ConfigQuery, WireGuardConfig>
 {
     public Task<WireGuardConfig> Handle(ConfigQuery request, CancellationToken cancellationToken)

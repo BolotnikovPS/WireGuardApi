@@ -13,8 +13,7 @@ public class AccessPortalTokenAuthenticationHandler(
     ILoggerFactory logger,
     UrlEncoder encoder,
     ISenderRun senderRun
-    )
-    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    ) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     private AuthenticateResult Result { get; set; }
 
@@ -23,7 +22,7 @@ public class AccessPortalTokenAuthenticationHandler(
     protected async Task<AuthenticateResult> HandleAuthenticateInternalAsync()
     {
         var claims = new List<Claim>();
-        var xToken = GetFromHeader(Request.Headers, TokenHeaderName, true);
+        var xToken = GetFromHeader(Request.Headers, TokenHeaderName, throwIfNotFount: true);
 
         var cancellationToken = Context.Request.HttpContext.RequestAborted;
 
@@ -69,7 +68,7 @@ public class AccessPortalTokenAuthenticationHandler(
     protected AuthenticationTicket BuildAuthenticationTicket(List<Claim> claims)
     {
         var identity = new ClaimsIdentity(claims, Scheme.Name);
-        var principal = new System.Security.Principal.GenericPrincipal(identity, null);
+        var principal = new System.Security.Principal.GenericPrincipal(identity, roles: null);
         return new(principal, Scheme.Name);
     }
 

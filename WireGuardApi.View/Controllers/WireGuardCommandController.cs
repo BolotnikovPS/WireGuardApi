@@ -11,10 +11,7 @@ namespace WireGuardApi.View.Controllers;
 [ApiController]
 [Route("{wgInterfaceName}/[controller]")]
 [Authorize]
-public class WireGuardCommandController(
-    ILogger<WireGuardCommandController> logger,
-    ISenderRun senderRun
-    ) : Controller
+public class WireGuardCommandController(ILogger<WireGuardCommandController> logger, ISenderRun senderRun) : Controller
 {
     [HttpGet]
     [Route("statistics")]

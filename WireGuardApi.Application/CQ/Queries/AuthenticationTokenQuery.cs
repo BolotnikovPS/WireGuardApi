@@ -7,9 +7,7 @@ namespace WireGuardApi.Application.CQ.Queries;
 
 public record AuthenticationTokenQuery(string Token) : IQuery<bool>;
 
-internal class AuthenticationTokenQueryHandler(
-    IConfigService configService
-    )
+internal class AuthenticationTokenQueryHandler(IConfigService configService)
     : IQueryHandler<AuthenticationTokenQuery, bool>
 {
     public Task<bool> Handle(AuthenticationTokenQuery request, CancellationToken cancellationToken)
@@ -17,7 +15,7 @@ internal class AuthenticationTokenQueryHandler(
         var tokens = configService.GetValueOrNull(EConfigKey.Tokens);
 
         return Task.FromResult(
-            tokens.CheckAny() 
+            tokens.CheckAny()
             && tokens.Contains(request.Token)
             );
     }

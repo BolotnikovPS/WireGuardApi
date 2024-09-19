@@ -5,9 +5,7 @@ namespace WireGuardApi.Application.CQ.Commands;
 
 public record RebootInterfaceCommand(string WgInterfaceName) : ICommand;
 
-internal class RebootInterfaceCommandHandler(
-    IWireGuardСontrol wireGuardСontrol
-    )
+internal class RebootInterfaceCommandHandler(IWireGuardСontrol wireGuardСontrol)
     : ICommandHandler<RebootInterfaceCommand>
 {
     public async Task Handle(RebootInterfaceCommand request, CancellationToken cancellationToken)

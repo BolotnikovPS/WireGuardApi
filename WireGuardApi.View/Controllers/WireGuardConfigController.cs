@@ -11,10 +11,7 @@ namespace WireGuardApi.View.Controllers;
 [ApiController]
 [Route("{wgInterfaceName}/[controller]")]
 [Authorize]
-public class WireGuardConfigController(
-    ILogger<WireGuardConfigController> logger,
-    ISenderRun senderRun
-    ) : Controller
+public class WireGuardConfigController(ILogger<WireGuardConfigController> logger, ISenderRun senderRun) : Controller
 {
     [HttpGet]
     public Task<WireGuardConfig> GetConfigAsync(string wgInterfaceName, CancellationToken cancellationToken)

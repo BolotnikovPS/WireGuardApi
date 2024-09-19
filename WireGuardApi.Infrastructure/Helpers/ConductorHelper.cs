@@ -4,10 +4,7 @@ namespace WireGuardApi.Infrastructure.Helpers;
 
 internal class ConductorHelper : IConductorHelper
 {
-    public string GetFullPath(string folderPath, string fileName = "")
-    {
-        return Path.Combine(folderPath, fileName);
-    }
+    public string GetFullPath(string folderPath, string fileName = "") => Path.Combine(folderPath, fileName);
 
     public bool FileExist(string folderPath, string fileName)
     {

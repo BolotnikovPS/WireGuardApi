@@ -30,17 +30,14 @@ public class Program
                 })
            .AddControllers()
            .AddNewtonsoftJson(
-                options =>
-                {
-                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                });
+                options => { options.SerializerSettings.Converters.Add(new StringEnumConverter()); });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services
            .AddEndpointsApiExplorer()
            .AddSwaggerGen()
            .AddInfrastructure();
-        
+
         services
            .Configure<KestrelServerOptions>(builder.Configuration.GetSection("Kestrel"))
            .AddLogging(
@@ -75,7 +72,7 @@ public class Program
 
         services
            .AddAuthentication(accessPortalTokenAuthenticationHandler)
-           .AddScheme<AuthenticationSchemeOptions, AccessPortalTokenAuthenticationHandler>(accessPortalTokenAuthenticationHandler, null);
+           .AddScheme<AuthenticationSchemeOptions, AccessPortalTokenAuthenticationHandler>(accessPortalTokenAuthenticationHandler, configureOptions: null);
 
         services.AddAuthorization();
 

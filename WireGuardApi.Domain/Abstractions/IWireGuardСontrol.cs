@@ -12,9 +12,9 @@ public interface IWireGuardСontrol
     Task<List<AddAutoPeerResponse>> AddAutoPeerAsync(string wgInterfaceName, string comment, CancellationToken cancellationToken);
 
     Task AddPeerAsync(string wgInterfaceName, string clientPeer, string clientPrivateIp, string comment, CancellationToken cancellationToken);
-    
+
     Task RemovePeerAsync(string wgInterfaceName, string clientPeer, CancellationToken cancellationToken);
-    
+
     Task<string> GetStatisticsAsync(string wgInterfaceName, CancellationToken cancellationToken);
 
     Task UpAsync(string wgInterfaceName, CancellationToken cancellationToken);

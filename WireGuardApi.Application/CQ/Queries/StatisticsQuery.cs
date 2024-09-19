@@ -5,9 +5,7 @@ namespace WireGuardApi.Application.CQ.Queries;
 
 public record StatisticsQuery(string WgInterfaceName) : IQuery<string>;
 
-internal class StatisticsQueryHandler(
-    IWireGuardСontrol wireGuardСontrol
-    )
+internal class StatisticsQueryHandler(IWireGuardСontrol wireGuardСontrol)
     : IQueryHandler<StatisticsQuery, string>
 {
     public Task<string> Handle(StatisticsQuery request, CancellationToken cancellationToken)

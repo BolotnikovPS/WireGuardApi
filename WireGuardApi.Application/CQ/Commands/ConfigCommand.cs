@@ -6,9 +6,7 @@ namespace WireGuardApi.Application.CQ.Commands;
 
 public record ConfigCommand(string WgInterfaceName, WireGuardConfig Config) : ICommand;
 
-internal class ConfigCommandHandler(
-    IWireGuardСontrol wireGuardСontrol
-    )
+internal class ConfigCommandHandler(IWireGuardСontrol wireGuardСontrol)
     : ICommandHandler<ConfigCommand>
 {
     public Task Handle(ConfigCommand request, CancellationToken cancellationToken)

@@ -5,9 +5,7 @@ namespace WireGuardApi.Application.CQ.Commands;
 
 public record AddPeerCommand(string WgInterfaceName, string ClientPeer, string ClientPrivateIp, string Comment) : ICommand;
 
-internal class AddPeerCommandHandler(
-    IWireGuardСontrol wireGuardСontrol
-    )
+internal class AddPeerCommandHandler(IWireGuardСontrol wireGuardСontrol)
     : ICommandHandler<AddPeerCommand>
 {
     public Task Handle(AddPeerCommand request, CancellationToken cancellationToken)
